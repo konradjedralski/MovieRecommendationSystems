@@ -14,7 +14,7 @@ import java.util.List;
 public class CollaborativeFilteringServiceImpl implements CollaborativeFilteringService{
 
     @Autowired
-    CollaborativeFilteringDAO collaborativeFilteringDAO;
+    private CollaborativeFilteringDAO collaborativeFilteringDAO;
 
 
     @Override

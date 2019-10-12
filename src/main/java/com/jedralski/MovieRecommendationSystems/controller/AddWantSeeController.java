@@ -21,11 +21,11 @@ import java.util.List;
 public class AddWantSeeController {
 
     @Autowired
-    WantSeeService wantSeeService;
+    private WantSeeService wantSeeService;
     @Autowired
-    MoviesApiService moviesApiService;
+    private MoviesApiService moviesApiService;
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @RequestMapping("")
     public String addWantSee() {
@@ -48,8 +48,9 @@ public class AddWantSeeController {
         MovieRatings movieRatings = moviesApiService.findMovieDetailsByMovieId(movieId);
         List<Integer> genresIds = movieRatings.getGenresIds();
         List<String> productionCountries = movieRatings.getProductionCountries();
+        List<Integer> productionCompanies = movieRatings.getProductionCompanies();
 
-        if (genresIds.isEmpty() || productionCountries.isEmpty()) {
+        if (genresIds.isEmpty() || productionCountries.isEmpty() || productionCompanies.isEmpty()) {
             model.addAttribute("checkStatus", 4);
             return "add-want-see";
         } else {
@@ -64,6 +65,7 @@ public class AddWantSeeController {
                                            .genresIds(genresIds)
                                            .productionCountries(productionCountries)
                                            .mainActorId(mainActor)
+                                           .productionCompanies(productionCompanies)
                                            .build();
 
                 if (wantSeeService.addWantSee(movieRatings)) {

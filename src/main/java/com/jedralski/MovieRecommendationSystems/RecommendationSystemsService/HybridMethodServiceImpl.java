@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 public class HybridMethodServiceImpl implements HybridMethodService{
 
     @Autowired
-    HybridMethodDAO hybridMethodDAO;
+    private HybridMethodDAO hybridMethodDAO;
 
     @Override
     public String message() {

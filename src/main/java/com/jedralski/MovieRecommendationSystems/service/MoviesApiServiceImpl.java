@@ -6,11 +6,14 @@ import com.jedralski.MovieRecommendationSystems.model.MovieRatings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 @Service
 public class MoviesApiServiceImpl implements MoviesApiService {
 
     @Autowired
-    MoviesApiDAO moviesApiDAO;
+    private MoviesApiDAO moviesApiDAO;
 
     @Override
     public Long findMovieIdByTitle(String title) throws ApiException {
@@ -30,5 +33,10 @@ public class MoviesApiServiceImpl implements MoviesApiService {
     @Override
     public String findMovieTitleById(long movieId) throws ApiException {
         return moviesApiDAO.findMovieTitleById(movieId);
+    }
+
+    @Override
+    public Map<Integer, String> findMovieTitlesByDetails(LinkedHashMap<Long, Double> genreRatingSorted, LinkedHashMap<Long, Double> productionCompanyRatingSorted, LinkedHashMap<Long, Double> mainActorRatingSorted) throws ApiException {
+        return moviesApiDAO.findMovieTitlesByDetails(genreRatingSorted, productionCompanyRatingSorted, mainActorRatingSorted);
     }
 }

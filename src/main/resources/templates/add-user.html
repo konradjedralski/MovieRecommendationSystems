@@ -13,7 +13,7 @@
             src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script crossorigin="anonymous" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <link href="/css/stylesheet.css" rel="stylesheet"/>
+    <link href="/static/css/styles.css" rel="stylesheet"/>
 </head>
 <body>
 <h1>ADD USER</h1>
@@ -28,10 +28,6 @@
     <div th:if="${checkStatus} == 1" class="alert alert-success message">
         <a href="#" class="close" data-dismiss="alert">&times;</a>
         <strong>Success!</strong> Adding user success.
-    </div>
-    <div th:if="${checkStatus} == 2" class="alert alert-danger message">
-        <a href="#" class="close" data-dismiss="alert">&times;</a>
-        <strong>Error!</strong> Wrong sex.
     </div>
 </div>
 <div class="row">
@@ -55,13 +51,13 @@
         <div class="form-group col-md-12">
             <label class="col-md-12">Birth date:</label>
             <div class="col-md-12">
-                <input class="form-control" id="birth-date" name="birth-date" required="required" type="date"/>
+                <input class="form-control" id="birth-date" name="birth-date" type="date"/>
             </div>
         </div>
         <div class="form-group col-md-12">
             <label class="col-md-12">Nationality:</label>
             <div class="col-md-12">
-                <input class="form-control" id="nationality" name="nationality" required="required"/>
+                <input class="form-control" id="nationality" name="nationality"/>
             </div>
         </div>
         <div class="form-group col-md-12">

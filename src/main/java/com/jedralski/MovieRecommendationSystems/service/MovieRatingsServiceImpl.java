@@ -8,10 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MovieRatingsServiceImpl implements MovieRatingsService{
+public class MovieRatingsServiceImpl implements MovieRatingsService {
 
     @Autowired
-    MovieRatingsDAO movieRatingsDAO;
+    private MovieRatingsDAO movieRatingsDAO;
 
     @Override
     public boolean addMovieRating(MovieRatings movieRatings) throws DatabaseException, InputException {

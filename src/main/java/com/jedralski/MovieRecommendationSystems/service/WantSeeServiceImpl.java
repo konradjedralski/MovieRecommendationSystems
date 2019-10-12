@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class WantSeeServiceImpl implements WantSeeService{
 
     @Autowired
-    WantSeeDAO wantSeeDAO;
+    private WantSeeDAO wantSeeDAO;
 
     @Override
     public boolean addWantSee(MovieRatings movieRatings) throws DatabaseException, InputException {

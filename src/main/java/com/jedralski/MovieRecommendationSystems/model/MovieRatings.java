@@ -12,6 +12,7 @@ public class MovieRatings implements Comparable<MovieRatings>{
     private List<String> productionCountries;
     private int mainActorId;
     private double rateRecommended;
+    private List<Integer> productionCompanies;
 
     public static final class Builder {
         private long movieId;
@@ -22,6 +23,7 @@ public class MovieRatings implements Comparable<MovieRatings>{
         private List<String> productionCountries;
         private int mainActorId;
         private double rateRecommended;
+        private List<Integer> productionCompanies;
 
         public Builder movieId(long movieId) {
             this.movieId = movieId;
@@ -63,6 +65,11 @@ public class MovieRatings implements Comparable<MovieRatings>{
             return this;
         }
 
+        public Builder productionCompanies(List<Integer> productionCompanies) {
+            this.productionCompanies = productionCompanies;
+            return this;
+        }
+
         public MovieRatings build() {
             MovieRatings movieRatings = new MovieRatings();
             movieRatings.movieId = this.movieId;
@@ -73,6 +80,7 @@ public class MovieRatings implements Comparable<MovieRatings>{
             movieRatings.productionCountries = this.productionCountries;
             movieRatings.mainActorId = this.mainActorId;
             movieRatings.rateRecommended = this.rateRecommended;
+            movieRatings.productionCompanies = this.productionCompanies;
             return movieRatings;
         }
     }
@@ -118,5 +126,9 @@ public class MovieRatings implements Comparable<MovieRatings>{
 
     public double getRateRecommended() {
         return rateRecommended;
+    }
+
+    public List<Integer> getProductionCompanies() {
+        return productionCompanies;
     }
 }

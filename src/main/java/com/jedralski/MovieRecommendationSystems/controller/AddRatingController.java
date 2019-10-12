@@ -24,11 +24,11 @@ import java.util.List;
 public class AddRatingController {
 
     @Autowired
-    MoviesApiService moviesApiService;
+    private MoviesApiService moviesApiService;
     @Autowired
-    UserService userService;
+    private UserService userService;
     @Autowired
-    MovieRatingsService movieRatingsService;
+    private MovieRatingsService movieRatingsService;
 
     @RequestMapping("")
     public String addRating() {
@@ -47,7 +47,12 @@ public class AddRatingController {
             model.addAttribute("checkStatus", 2);
             return "add-rating";
         }
-        int userAge = Period.between(user.getBirthDate().toLocalDate(), LocalDate.now()).getYears();
+        int userAge;
+        if (user.getBirthDate() != null) {
+            userAge = Period.between(user.getBirthDate().toLocalDate(), LocalDate.now()).getYears();
+        } else {
+            userAge = 0;
+        }
         Long movieId = moviesApiService.findMovieIdByTitle(movieTitle);
         if (movieId == null) {
             model.addAttribute("checkStatus", 3);
@@ -56,8 +61,9 @@ public class AddRatingController {
         MovieRatings movieRatings = moviesApiService.findMovieDetailsByMovieId(movieId);
         List<Integer> genresIds = movieRatings.getGenresIds();
         List<String> productionCountries = movieRatings.getProductionCountries();
+        List<Integer> productionCompanies = movieRatings.getProductionCompanies();
 
-        if (genresIds.isEmpty() || productionCountries.isEmpty()) {
+        if (genresIds.isEmpty() || productionCountries.isEmpty() || productionCompanies.isEmpty()) {
             model.addAttribute("checkStatus", 5);
             return "add-rating";
         } else {
@@ -74,6 +80,7 @@ public class AddRatingController {
                                            .genresIds(genresIds)
                                            .productionCountries(productionCountries)
                                            .mainActorId(mainActor)
+                                           .productionCompanies(productionCompanies)
                                            .build();
 
                 if (movieRatingsService.addMovieRating(movieRatings)) {

@@ -16,12 +16,13 @@ public class UserDAOImpl implements UserDAO {
         PreparedStatement preparedStatement = null;
         try {
             connection = DBConnector.getConnection();
-            String query = "INSERT INTO public.user (username, sex, birth_date, nationality) VALUES (?, ?, ?, ?)";
+            String query = "INSERT INTO public.user (username, sex, birth_date, nationality, real) VALUES (?, ?, ?, ?, ?)";
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getSex());
             preparedStatement.setDate(3, user.getBirthDate());
             preparedStatement.setString(4, user.getNationality());
+            preparedStatement.setBoolean(5, true);
             preparedStatement.executeUpdate();
             return true;
         } catch (IllegalArgumentException e) {

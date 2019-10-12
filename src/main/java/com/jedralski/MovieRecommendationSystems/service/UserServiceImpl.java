@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService{
 
     @Autowired
-    UserDAO userDAO;
+    private UserDAO userDAO;
 
     @Override
     public boolean addUser(User user) throws InputException, DatabaseException {

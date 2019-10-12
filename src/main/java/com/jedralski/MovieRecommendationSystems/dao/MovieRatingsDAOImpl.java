@@ -16,12 +16,13 @@ public class MovieRatingsDAOImpl implements MovieRatingsDAO {
     @Override
     public boolean addMovieRating(MovieRatings movieRatings) throws DatabaseException, InputException {
         Integer[] genresArray = movieRatings.getGenresIds().toArray(new Integer[movieRatings.getGenresIds().size()]);
+        Integer[] companiesArray = movieRatings.getProductionCompanies().toArray(new Integer[movieRatings.getProductionCompanies().size()]);
         String[] countriesArray = movieRatings.getProductionCountries().toArray(new String[movieRatings.getProductionCountries().size()]);
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
             connection = DBConnector.getConnection();
-            String query = "INSERT INTO movie_ratings (movie_id, user_id, rate, user_age, genres_ids, production_countries_iso, main_actor_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO movie_ratings (movie_id, user_id, rate, user_age, genres_ids, production_countries_iso, main_actor_id, real, production_companies) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setLong(1, movieRatings.getMovieId());
             preparedStatement.setLong(2, movieRatings.getUserId());
@@ -30,6 +31,8 @@ public class MovieRatingsDAOImpl implements MovieRatingsDAO {
             preparedStatement.setArray(5, connection.createArrayOf("INTEGER", genresArray));
             preparedStatement.setArray(6, connection.createArrayOf("VARCHAR", countriesArray));
             preparedStatement.setLong(7, movieRatings.getMainActorId());
+            preparedStatement.setBoolean(8, true);
+            preparedStatement.setArray(9, connection.createArrayOf("INTEGER", companiesArray));
             preparedStatement.executeUpdate();
             return true;
         } catch (IllegalArgumentException e) {

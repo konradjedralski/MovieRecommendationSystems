@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat;
 public class AddUserController {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @RequestMapping("")
     public String addUser() {
@@ -28,20 +28,27 @@ public class AddUserController {
 
     @PostMapping
     public String addUserPost(@RequestParam("username") String username, @RequestParam("sex") String sex, @RequestParam("birth-date") String birthDate, @RequestParam("nationality") String nationality, Model model) throws DatabaseException, InputException, ParseException {
+        java.sql.Date sqlBirthDate = null;
 
         if (sex.equals("chooseSex")) {
-            model.addAttribute("checkStatus", 2);
-            return "add-user";
+            sex = null;
         }
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        java.util.Date date = format.parse(birthDate);
-        java.sql.Date sqlBirthDate = new java.sql.Date(date.getTime());
+        if (!birthDate.equals("")) {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            java.util.Date date = format.parse(birthDate);
+            sqlBirthDate = new java.sql.Date(date.getTime());
+        }
+        if (nationality.equals("")) {
+            nationality = null;
+        } else {
+            nationality = nationality.toUpperCase();
+        }
 
         User user = User.builder()
                         .username(username)
                         .sex(sex)
                         .birthDate(sqlBirthDate)
-                        .nationality(nationality.toUpperCase())
+                        .nationality(nationality)
                         .build();
 
         if (userService.addUser(user)) {

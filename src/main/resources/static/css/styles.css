@@ -4,3 +4,8 @@
     right: 10px;
     width: 80px;
 }
+
+.recommendationTitle{
+    font-weight: bold;
+    color: green;
+}

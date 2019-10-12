@@ -8,7 +8,11 @@ import com.jedralski.MovieRecommendationSystems.model.MovieRatings;
 import com.jedralski.MovieRecommendationSystems.model.Neighbour;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
+import java.sql.Array;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -108,6 +112,8 @@ public class CollaborativeFilteringDAOImpl implements CollaborativeFilteringDAO 
         ResultSet resultSet = null;
         Map<Long, Integer> moviesIndexes = new HashMap<>();
         StringBuilder builder = new StringBuilder();
+        List<Neighbour> neighborhood1 = Lists.newArrayList();
+        List<Neighbour> neighborhood2 = Lists.newArrayList();
         try {
             connection = DBConnector.getConnection();
 
@@ -131,21 +137,27 @@ public class CollaborativeFilteringDAOImpl implements CollaborativeFilteringDAO 
                 }
                 while (resultSet.next()) {
                     int rating = resultSet.getInt("rate");
-                    int bookRating = userRatingsList.get(moviesIndexes.get(resultSet.getLong("movie_id"))).getRate();
+                    int movieRate = userRatingsList.get(moviesIndexes.get(resultSet.getLong("movie_id"))).getRate();
 
                     neighbour = Neighbour.builder()
-                                         .distance(neighbour.getDistance() + Math.abs(rating - bookRating)) //Add the distance between user and neighbor based on the userRatingsList
+                                         .userID(neighbour.getUserId())
+                                         .sameMovies(neighbour.getSameMovies())
+                                         .distance(neighbour.getDistance() + Math.abs(rating - movieRate)) //Add the distance between user and neighbor based on the userRatingsList
                                          .build();
                 }
+                neighborhood1.add(neighbour);
             }
 
-            for (Neighbour neighbour : neighborhood) {
+            for (Neighbour neighbour : neighborhood1) {
                 neighbour = Neighbour.builder()
+                                     .userID(neighbour.getUserId())
+                                     .sameMovies(neighbour.getSameMovies())
                                      .distance((int) (neighbour.getDistance() / neighbour.getSameMovies())) //Divide result by the number of books so that the result is fair.
                                      .build();
+                neighborhood2.add(neighbour);
             }
-            Collections.sort(neighborhood);
-            return neighborhood;
+            Collections.sort(neighborhood2);
+            return neighborhood2;
         } catch (SQLException e) {
             throw new DatabaseException("Problem with ID: " + e);
         } finally {
@@ -307,7 +319,7 @@ public class CollaborativeFilteringDAOImpl implements CollaborativeFilteringDAO 
             for (int i = 0; i < wantSeeMovies.size(); i++) {
                 builderWantSee.append("?,");
             }
-            String query = "SELECT movie_id, rate, genres_ids, production_countries_iso, main_actor_id FROM movie_ratings WHERE user_id IN (" + builderUser.deleteCharAt(builderUser.length() - 1).toString() + ") AND movie_id NOT IN (" + builderRating.deleteCharAt(builderRating.length() - 1).toString() + ") AND movie_id NOT IN (" + builderWantSee.deleteCharAt(builderWantSee.length() - 1).toString() + ") ORDER BY rate DESC LIMIT 20";
+            String query = "SELECT movie_id, rate, genres_ids, production_countries_iso, main_actor_id FROM movie_ratings WHERE user_id IN (" + builderUser.deleteCharAt(builderUser.length() - 1).toString() + ") AND movie_id NOT IN (" + builderRating.deleteCharAt(builderRating.length() - 1).toString() + ") AND movie_id NOT IN (" + builderWantSee.deleteCharAt(builderWantSee.length() - 1).toString() + ") ORDER BY rate DESC LIMIT 40";
             preparedStatement = connection.prepareStatement(query);
             for (int i = 0; i < k; i++) {
                 preparedStatement.setLong(i + 1, (neighborhood.get(i).getUserId()));
