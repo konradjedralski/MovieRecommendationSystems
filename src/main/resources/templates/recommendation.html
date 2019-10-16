@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Recommendation</title>
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          rel="stylesheet">
+    <script crossorigin="anonymous" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script crossorigin="anonymous" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script crossorigin="anonymous" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link href="/css/styles.css" rel="stylesheet"/>
+</head>
+<body>
+<h1>RECOMMENDATION</h1>
+<div class="content">
+    <img alt="The Movie DB" src="/img/logo.png"/>
+</div>
+<div class="col-md-4">
+    <div class="alert alert-danger message" th:if="${checkStatus} == 0">
+        <a class="close" data-dismiss="alert" href="#">&times;</a>
+        <strong>Error!</strong> Wrong username.
+    </div>
+</div>
+<div class="row">
+    <form class="form-horizontal" method="post" role="form" th:action="@{'/recommendation'}">
+        <div class="form-group col-md-12">
+            <label class="col-md-12">Username:</label>
+            <div class="col-md-12">
+                <input class="form-control" id="username" name="username" required="required"/>
+            </div>
+        </div>
+        <div class="form-group col-md-12">
+            <div class="col-md-12">
+                <button class="btn-primary btn col-md-12" id="submitContentBasedFiltering" name="action" onclick="this.blur()" type="submit" value="collaborativeFiltering">Collaborative
+                    Filtering
+                </button>
+            </div>
+            <div class="col-md-12">
+                <br/>
+                <button class="btn-primary btn col-md-12" id="submitCollaborativeFiltering" name="action" onclick="this.blur()" type="submit" value="contentBasedFiltering">Content Based
+                    Filtering
+                </button>
+            </div>
+            <div class="col-md-12">
+                <br/>
+                <button class="btn-primary btn col-md-12" id="hybrid" name="action" onclick="this.blur()" type="submit" value="hybrid">Hybrid</button>
+            </div>
+            <div class="col-md-12">
+                <br/><br/>
+                <a class="form-control btn btn-primary col-md-12" onclick="this.blur()" role="button" th:href="@{'/'}"> Main page</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="col-md-12" th:if="${moviesToRecommended} != null">
+    <span class="recommendationTitle">Recommendation using <u><i><span th:text="${recommendationName}"></span></i></u> - for user <span th:text="${user}"></span>.</span>
+    <br/><br/>
+    <b>Duration time: </b><span th:text="${duration}"></span> milliseconds.
+    <br/>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">ID</th>
+            <th scope="col">Title</th>
+            <th scope="col">URL EN</th>
+            <th scope="col">URL PL</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="moviesToRecommendedList, iter : ${moviesToRecommended}">
+            <td><b><span th:text="${iter.index + 1}"></span></b></td>
+            <td><span th:text="${moviesToRecommendedList.getKey()}"></span></td>
+            <td><span th:text="${moviesToRecommendedList.getValue()}"></span></td>
+            <td><a th:href="@{'https://www.themoviedb.org/movie/' + ${moviesToRecommendedList.getKey()} + '?language=en-US'}"><span
+                    th:text="'https://www.themoviedb.org/movie/' + ${moviesToRecommendedList.getKey()} + '?language=en-US'"></span></a></td>
+            <td><a th:href="@{'https://www.themoviedb.org/movie/' + ${moviesToRecommendedList.getKey()} + '?language=pl-PL'}"><span
+                    th:text="'https://www.themoviedb.org/movie/' + ${moviesToRecommendedList.getKey()} + '?language=pl-PL'"></span></a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
