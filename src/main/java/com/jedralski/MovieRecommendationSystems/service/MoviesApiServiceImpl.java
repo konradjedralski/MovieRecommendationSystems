@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 @Service
 public class MoviesApiServiceImpl implements MoviesApiService {
@@ -36,7 +35,7 @@ public class MoviesApiServiceImpl implements MoviesApiService {
     }
 
     @Override
-    public Map<Integer, String> findMovieTitlesByDetails(LinkedHashMap<Long, Double> genreRatingSorted, LinkedHashMap<Long, Double> productionCompanyRatingSorted, LinkedHashMap<Long, Double> mainActorRatingSorted) throws ApiException {
+    public LinkedHashMap<Long, String> findMovieTitlesByDetails(LinkedHashMap<Long, Double> genreRatingSorted, LinkedHashMap<Long, Double> productionCompanyRatingSorted, LinkedHashMap<Long, Double> mainActorRatingSorted) throws ApiException {
         return moviesApiDAO.findMovieTitlesByDetails(genreRatingSorted, productionCompanyRatingSorted, mainActorRatingSorted);
     }
 }

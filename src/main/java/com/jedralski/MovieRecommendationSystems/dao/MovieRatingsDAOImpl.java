@@ -1,5 +1,6 @@
 package com.jedralski.MovieRecommendationSystems.dao;
 
+import com.google.common.collect.Lists;
 import com.jedralski.MovieRecommendationSystems.connection.DBConnector;
 import com.jedralski.MovieRecommendationSystems.exception.DatabaseException;
 import com.jedralski.MovieRecommendationSystems.exception.InputException;
@@ -8,7 +9,9 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 @Repository
 public class MovieRatingsDAOImpl implements MovieRatingsDAO {
@@ -40,6 +43,36 @@ public class MovieRatingsDAOImpl implements MovieRatingsDAO {
         } catch (SQLException e) {
             return false;
         } finally {
+            DBConnector.closeStatement(preparedStatement);
+            DBConnector.closeConnection(connection);
+        }
+    }
+
+    @Override
+    public List<Long> getMovieIdFromMovieRatings(Long userId) throws DatabaseException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = DBConnector.getConnection();
+            String query = "SELECT movie_id FROM movie_ratings WHERE user_id = ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setLong(1, userId);
+            resultSet = preparedStatement.executeQuery();
+            List<Long> movieRatingList = Lists.newArrayList();
+            if (resultSet == null) {
+                throw new DatabaseException("Error returning result.");
+            }
+            while (resultSet.next()) {
+                Long movieId = resultSet.getLong("movie_id");
+
+                movieRatingList.add(movieId);
+            }
+            return movieRatingList;
+        } catch (SQLException e) {
+            throw new DatabaseException("Problem with ID: " + e);
+        } finally {
+            DBConnector.closeResultSet(resultSet);
             DBConnector.closeStatement(preparedStatement);
             DBConnector.closeConnection(connection);
         }

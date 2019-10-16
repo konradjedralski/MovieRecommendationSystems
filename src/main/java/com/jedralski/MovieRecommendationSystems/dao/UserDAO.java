@@ -6,7 +6,7 @@ import com.jedralski.MovieRecommendationSystems.model.User;
 
 public interface UserDAO {
 
-    boolean addUser (User user) throws InputException, DatabaseException;
+    boolean addUser(User user) throws InputException, DatabaseException;
 
-    User getUserDataByUsername (String username) throws DatabaseException;
+    User getUserDataByUsername(String username) throws DatabaseException;
 }

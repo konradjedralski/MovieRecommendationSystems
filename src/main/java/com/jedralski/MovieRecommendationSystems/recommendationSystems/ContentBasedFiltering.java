@@ -1,12 +1,17 @@
 package com.jedralski.MovieRecommendationSystems.recommendationSystems;
 
+import com.google.common.collect.Lists;
 import com.jedralski.MovieRecommendationSystems.RecommendationSystemsService.ContentBasedFilteringService;
 import com.jedralski.MovieRecommendationSystems.exception.DatabaseException;
+import com.jedralski.MovieRecommendationSystems.model.MovieRatings;
+import com.jedralski.MovieRecommendationSystems.service.MoviesApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -17,29 +22,10 @@ public class ContentBasedFiltering {
 
     @Autowired
     ContentBasedFilteringService contentBasedFilteringService;
+    @Autowired
+    MoviesApiService moviesApiService;
 
-//    public LinkedList<DataRecommended> dataRecommended(Long userId) throws DatabaseException {
-//        LinkedHashMap<Long, Double> genreRating = sortGenres(userId);
-//        LinkedHashMap<Long, Double> productionCompanyRating = sortProductionCompanies(userId);
-//        LinkedHashMap<Long, Double> mainActorRating = sortActors(userId);
-//        LinkedList<DataRecommended> dataRecommended = Lists.newLinkedList();
-//
-//        for (Map.Entry<Long, Double> genre : genreRating.entrySet()) {
-//            for (Map.Entry<Long, Double> company : productionCompanyRating.entrySet()) {
-//                for (Map.Entry<Long, Double> actor : mainActorRating.entrySet()) {
-//                    dataRecommended.add(DataRecommended.builder()
-//                                                       .genre(genre.getKey())
-//                                                       .productionCompany(company.getKey())
-//                                                       .actor(actor.getKey())
-//                                                       .rating(((genre.getValue() * 0.7) + (actor.getValue() * 0.2) + (company.getValue() * 0.1)))
-//                                                       .build());
-//                }
-//            }
-//        }
-//
-//        Collections.sort(dataRecommended);
-//        return dataRecommended; //.stream().limit(5).collect(Collectors.toCollection(LinkedList::new))
-//    }
+    private final int limit = 15;
 
     public LinkedHashMap<Long, Double> sortGenres(Long userId) throws DatabaseException {
         HashMap<Long, Double> genreRating = contentBasedFilteringService.avgGenreRating(userId);
@@ -54,7 +40,7 @@ public class ContentBasedFiltering {
             }
         }
 
-        LinkedHashMap<Long, Double> genreRatingSorted = genreRating.entrySet().stream().sorted(reverseOrder(Map.Entry.comparingByValue())).limit(15)
+        LinkedHashMap<Long, Double> genreRatingSorted = genreRating.entrySet().stream().sorted(reverseOrder(Map.Entry.comparingByValue())).limit(limit)
                                                                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
 
         return genreRatingSorted;
@@ -73,7 +59,7 @@ public class ContentBasedFiltering {
             }
         }
 
-        LinkedHashMap<Long, Double> productionCompanyRatingSorted = productionCompanyRating.entrySet().stream().sorted(reverseOrder(Map.Entry.comparingByValue())).limit(15)
+        LinkedHashMap<Long, Double> productionCompanyRatingSorted = productionCompanyRating.entrySet().stream().sorted(reverseOrder(Map.Entry.comparingByValue())).limit(limit)
                                                                                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
 
         return productionCompanyRatingSorted;
@@ -92,9 +78,53 @@ public class ContentBasedFiltering {
             }
         }
 
-        LinkedHashMap<Long, Double> mainActorRatingSorted = mainActorRating.entrySet().stream().sorted(reverseOrder(Map.Entry.comparingByValue())).limit(15)
+        LinkedHashMap<Long, Double> mainActorRatingSorted = mainActorRating.entrySet().stream().sorted(reverseOrder(Map.Entry.comparingByValue())).limit(limit)
                                                                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
 
         return mainActorRatingSorted;
+    }
+
+    public List<MovieRatings> addRecommendationRating(LinkedHashMap<Long, String> moviesToRecommendedContentBased, LinkedHashMap<Long, Double> genreRatingSorted, LinkedHashMap<Long, Double> productionCompanyRatingSorted, LinkedHashMap<Long, Double> mainActorRatingSorted) {
+        List<MovieRatings> movieRatingsList = Lists.newArrayList();
+
+        for (Map.Entry<Long, String> recommendedMovies : moviesToRecommendedContentBased.entrySet()) {
+            MovieRatings movieRatings = moviesApiService.findMovieDetailsByMovieId(recommendedMovies.getKey());
+            List<Integer> genresIds = movieRatings.getGenresIds();
+            List<Integer> productionCompanies = movieRatings.getProductionCompanies();
+            int mainActor = moviesApiService.findMainActorByMovieId(recommendedMovies.getKey());
+            double newRating = 0;
+            int i = limit;
+
+            for (Map.Entry<Long, Double> genreRating : genreRatingSorted.entrySet()) {
+                for (int genre : genresIds) {
+                    if (genreRating.getKey() == (long) genre) {
+                        newRating += (((0.7 / limit) * i) * genreRating.getValue());
+                    }
+                }
+                i--;
+            }
+            i = limit;
+            for (Map.Entry<Long, Double> companyRating : productionCompanyRatingSorted.entrySet()) {
+                for (int company : productionCompanies) {
+                    if (companyRating.getKey() == (long) company) {
+                        newRating += (((0.1 / limit) * i) * companyRating.getValue());
+                    }
+                }
+                i--;
+            }
+            i = limit;
+            for (Map.Entry<Long, Double> actorRating : mainActorRatingSorted.entrySet()) {
+                if (actorRating.getKey() == (long) mainActor) {
+                    newRating += (((0.2 / limit) * i) * actorRating.getValue());
+                }
+                i--;
+            }
+            movieRatingsList.add(MovieRatings.builder()
+                                             .movieId(recommendedMovies.getKey())
+                                             .rateRecommended(newRating)
+                                             .build());
+        }
+        Collections.sort(movieRatingsList);
+        return movieRatingsList;
     }
 }

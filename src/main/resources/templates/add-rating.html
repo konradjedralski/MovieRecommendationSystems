@@ -13,7 +13,7 @@
             src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script crossorigin="anonymous" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <link href="/static/css/styles.css" rel="stylesheet"/>
+    <link href="/css/styles.css" rel="stylesheet"/>
 </head>
 <body>
 <h1>ADD RATING</h1>
@@ -21,32 +21,32 @@
     <img alt="The Movie DB" src="/img/logo.png"/>
 </div>
 <div class="col-md-4">
-    <div th:if="${checkStatus} == 0" class="alert alert-danger message">
-        <a href="#" class="close" data-dismiss="alert">&times;</a>
+    <div class="alert alert-danger message" th:if="${checkStatus} == 0">
+        <a class="close" data-dismiss="alert" href="#">&times;</a>
         <strong>Error!</strong> Adding rating failed.
     </div>
-    <div th:if="${checkStatus} == 1" class="alert alert-success message">
-        <a href="#" class="close" data-dismiss="alert">&times;</a>
+    <div class="alert alert-success message" th:if="${checkStatus} == 1">
+        <a class="close" data-dismiss="alert" href="#">&times;</a>
         <strong>Success!</strong> Adding rating success.
     </div>
-    <div th:if="${checkStatus} == 2" class="alert alert-danger message">
-        <a href="#" class="close" data-dismiss="alert">&times;</a>
+    <div class="alert alert-danger message" th:if="${checkStatus} == 2">
+        <a class="close" data-dismiss="alert" href="#">&times;</a>
         <strong>Error!</strong> Wrong username.
     </div>
-    <div th:if="${checkStatus} == 3" class="alert alert-danger message">
-        <a href="#" class="close" data-dismiss="alert">&times;</a>
+    <div class="alert alert-danger message" th:if="${checkStatus} == 3">
+        <a class="close" data-dismiss="alert" href="#">&times;</a>
         <strong>Error!</strong> Wrong movie title.
     </div>
-    <div th:if="${checkStatus} == 4" class="alert alert-danger message">
-        <a href="#" class="close" data-dismiss="alert">&times;</a>
+    <div class="alert alert-danger message" th:if="${checkStatus} == 4">
+        <a class="close" data-dismiss="alert" href="#">&times;</a>
         <strong>Error!</strong> Wrong rating.
     </div>
-    <div th:if="${checkStatus} == 5" class="alert alert-danger message">
-        <a href="#" class="close" data-dismiss="alert">&times;</a>
+    <div class="alert alert-danger message" th:if="${checkStatus} == 5">
+        <a class="close" data-dismiss="alert" href="#">&times;</a>
         <strong>Error!</strong> No genre, production country or company.
     </div>
-    <div th:if="${checkStatus} == 6" class="alert alert-danger message">
-        <a href="#" class="close" data-dismiss="alert">&times;</a>
+    <div class="alert alert-danger message" th:if="${checkStatus} == 6">
+        <a class="close" data-dismiss="alert" href="#">&times;</a>
         <strong>Error!</strong> No main actor.
     </div>
 </div>

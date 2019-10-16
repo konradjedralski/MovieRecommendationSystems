@@ -2,7 +2,7 @@ package com.jedralski.MovieRecommendationSystems.model;
 
 import java.util.List;
 
-public class MovieRatings implements Comparable<MovieRatings>{
+public class MovieRatings implements Comparable<MovieRatings> {
 
     private long movieId;
     private long userId;

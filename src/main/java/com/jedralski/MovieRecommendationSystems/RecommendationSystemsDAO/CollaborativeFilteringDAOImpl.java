@@ -263,6 +263,7 @@ public class CollaborativeFilteringDAOImpl implements CollaborativeFilteringDAO 
         }
     }
 
+    //List of user want see movies
     @Override
     public List<Long> getWantSeeMovies(Long userId) throws DatabaseException {
         Connection connection = null;
@@ -353,22 +354,22 @@ public class CollaborativeFilteringDAOImpl implements CollaborativeFilteringDAO 
 
                 double newRating = (0.5 * recommendedMovies.getRateRecommended());
                 for (int genresIds : genresIdsInteger) {
-                    if (!avgGenreRating.containsKey(genresIds)) {
-                        newRating += (0.25 * recommendedMovies.getRateRecommended());
+                    if (!avgGenreRating.containsKey((long) genresIds)) {
+                        newRating += ((0.25 / genresIdsInteger.length) * recommendedMovies.getRateRecommended());
                     } else {
-                        newRating += (0.25 * avgGenreRating.get(genresIds));
+                        newRating += ((0.25 / genresIdsInteger.length) * avgGenreRating.get((long) genresIds));
                     }
                 }
-                if (!avgMainActorRating.containsKey(mainActorId)) {
+                if (!avgMainActorRating.containsKey((long) mainActorId)) {
                     newRating += (0.15 * recommendedMovies.getRateRecommended());
                 } else {
-                    newRating += (0.15 * avgMainActorRating.get(mainActorId));
+                    newRating += (0.15 * avgMainActorRating.get((long) mainActorId));
                 }
                 for (String countriesIso : countriesIsoString) {
                     if (!avgProductionCountriesRating.containsKey(countriesIso)) {
-                        newRating += (0.1 * recommendedMovies.getRateRecommended());
+                        newRating += ((0.1 / countriesIsoString.length) * recommendedMovies.getRateRecommended());
                     } else {
-                        newRating += (0.1 * avgProductionCountriesRating.get(countriesIso));
+                        newRating += ((0.1 / countriesIsoString.length) * avgProductionCountriesRating.get(countriesIso));
                     }
                 }
                 recommendedMovies = MovieRatings.builder()

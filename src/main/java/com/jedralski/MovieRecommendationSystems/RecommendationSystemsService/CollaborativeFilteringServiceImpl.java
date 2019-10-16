@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @Service
-public class CollaborativeFilteringServiceImpl implements CollaborativeFilteringService{
+public class CollaborativeFilteringServiceImpl implements CollaborativeFilteringService {
 
     @Autowired
     private CollaborativeFilteringDAO collaborativeFilteringDAO;

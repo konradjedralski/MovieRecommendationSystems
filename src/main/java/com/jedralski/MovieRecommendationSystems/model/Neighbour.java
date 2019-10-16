@@ -1,6 +1,6 @@
 package com.jedralski.MovieRecommendationSystems.model;
 
-public class Neighbour implements Comparable<Neighbour>{
+public class Neighbour implements Comparable<Neighbour> {
 
     private Long userId;
     private Long sameMovies;
@@ -35,6 +35,7 @@ public class Neighbour implements Comparable<Neighbour>{
             return neighbour;
         }
     }
+
     @Override
     public int compareTo(Neighbour o) {
         return (this.distance - o.distance);

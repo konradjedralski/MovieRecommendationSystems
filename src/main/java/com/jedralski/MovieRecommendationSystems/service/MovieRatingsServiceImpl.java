@@ -7,6 +7,8 @@ import com.jedralski.MovieRecommendationSystems.model.MovieRatings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class MovieRatingsServiceImpl implements MovieRatingsService {
 
@@ -16,5 +18,10 @@ public class MovieRatingsServiceImpl implements MovieRatingsService {
     @Override
     public boolean addMovieRating(MovieRatings movieRatings) throws DatabaseException, InputException {
         return movieRatingsDAO.addMovieRating(movieRatings);
+    }
+
+    @Override
+    public List<Long> getMovieIdFromMovieRatings(Long userId) throws DatabaseException {
+        return movieRatingsDAO.getMovieIdFromMovieRatings(userId);
     }
 }

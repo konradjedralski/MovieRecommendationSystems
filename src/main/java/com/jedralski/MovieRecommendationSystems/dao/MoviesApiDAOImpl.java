@@ -20,7 +20,7 @@ public class MoviesApiDAOImpl implements MoviesApiDAO {
     private static final String API_URL_FIND_MOVIE_BY_TITLE = "https://api.themoviedb.org/3/search/movie?api_key=%s&query=%s";
     private static final String API_URL_FIND_MOVIE_DETAILS_BY_MOVIE_ID = "https://api.themoviedb.org/3/movie/%s?api_key=%s&language=en-US";
     private static final String API_URL_FIND_MOVIE_CREDITS_BY_MOVIE_ID = "https://api.themoviedb.org/3/movie/%s/credits?api_key=%s";
-    private static final String API_URL_FIND_MOVIE_TITLE_BY_DETAILS = "https://api.themoviedb.org/3/discover/movie?api_key=%s&language=en-US&sort_by=popularity.desc&include_video=false&page=1&with_cast=%s&with_companies=%s&with_genres=%s";
+    private static final String API_URL_FIND_MOVIE_TITLE_BY_DETAILS = "https://api.themoviedb.org/3/discover/movie?api_key=%s&language=en-US&with_cast=%s&with_companies=%s&with_genres=%s&page=%s";
 
     private final ConnectionFactory connectionFactory;
 
@@ -98,36 +98,47 @@ public class MoviesApiDAOImpl implements MoviesApiDAO {
     }
 
     @Override
-    public Map<Integer, String> findMovieTitlesByDetails(LinkedHashMap<Long, Double> genreRatingSorted, LinkedHashMap<Long, Double> productionCompanyRatingSorted, LinkedHashMap<Long, Double> mainActorRatingSorted) throws ApiException {
+    public LinkedHashMap<Long, String> findMovieTitlesByDetails(LinkedHashMap<Long, Double> genreRatingSorted, LinkedHashMap<Long, Double> productionCompanyRatingSorted, LinkedHashMap<Long, Double> mainActorRatingSorted) throws ApiException {
         StringBuilder builderGenres = new StringBuilder();
         StringBuilder builderCompanies = new StringBuilder();
         StringBuilder builderActors = new StringBuilder();
-        Map<Integer, String> movies = Maps.newHashMap();
+        LinkedHashMap<Long, String> movies = Maps.newLinkedHashMap();
 
-        for(Map.Entry<Long, Double> genre : genreRatingSorted.entrySet()){
+        for (Map.Entry<Long, Double> genre : genreRatingSorted.entrySet()) {
             builderGenres.append(genre.getKey() + "|");
         }
-        for(Map.Entry<Long, Double> company : productionCompanyRatingSorted.entrySet()){
+        for (Map.Entry<Long, Double> company : productionCompanyRatingSorted.entrySet()) {
             builderCompanies.append(company.getKey() + "|");
         }
-        for(Map.Entry<Long, Double> actor : mainActorRatingSorted.entrySet()){
+        for (Map.Entry<Long, Double> actor : mainActorRatingSorted.entrySet()) {
             builderActors.append(actor.getKey() + "|");
         }
 
-        String requestURL = String.format(API_URL_FIND_MOVIE_TITLE_BY_DETAILS, API_KEY ,builderActors.deleteCharAt(builderActors.length() - 1).toString(), builderCompanies.deleteCharAt(builderCompanies.length() - 1).toString(), builderGenres.deleteCharAt(builderGenres.length() - 1).toString());
+        String requestURL = String.format(API_URL_FIND_MOVIE_TITLE_BY_DETAILS, API_KEY, builderActors.deleteCharAt(builderActors.length() - 1).toString(), builderCompanies.deleteCharAt(builderCompanies.length() - 1).toString(), builderGenres.deleteCharAt(builderGenres.length() - 1).toString(), 1);
         String response = getResponse(requestURL);
-        try {
-            List<Integer> moviesIds = JsonPath.read(response, "$['results'][*]['id']");
-            List<String> moviesTitles = JsonPath.read(response, "$['results'][*]['title']");
 
-            for (int i = 0; i < moviesIds.size(); i++) {
-                movies.put(moviesIds.get(i), moviesTitles.get(i));
-            }
+        int page = JsonPath.read(response, "$['total_pages']");
+        List<Integer> moviesIds = JsonPath.read(response, "$['results'][*]['id']");
+        List<String> moviesTitles = JsonPath.read(response, "$['results'][*]['title']");
 
-            return movies;
-        } catch (Exception ex) {
-            return null;
+        for (int i = 0; i < moviesIds.size(); i++) {
+            movies.put((long) moviesIds.get(i), moviesTitles.get(i));
         }
+
+        if (page > 1) {
+            for (int i = 2; i <= page; i++) {
+                String requestURLNext = String.format(API_URL_FIND_MOVIE_TITLE_BY_DETAILS, API_KEY, builderActors.toString(), builderCompanies.toString(), builderGenres.toString(), i);
+                String responseNext = getResponse(requestURLNext);
+                List<Integer> moviesIdsNext = JsonPath.read(responseNext, "$['results'][*]['id']");
+                List<String> moviesTitlesNext = JsonPath.read(responseNext, "$['results'][*]['title']");
+
+                for (int a = 0; a < moviesIdsNext.size(); a++) {
+                    movies.put((long) moviesIdsNext.get(a), moviesTitlesNext.get(a));
+                }
+            }
+        }
+
+        return movies;
     }
 
     private String getResponse(String requestURL) {
