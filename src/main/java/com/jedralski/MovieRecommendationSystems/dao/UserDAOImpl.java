@@ -13,6 +13,7 @@ import java.sql.SQLException;
 
 @Repository
 public class UserDAOImpl implements UserDAO {
+
     @Override
     public boolean addUser(User user) throws InputException, DatabaseException {
         Connection connection = null;

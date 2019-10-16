@@ -14,7 +14,7 @@ import java.util.List;
 public class CollaborativeFiltering {
 
     @Autowired
-    CollaborativeFilteringService collaborativeFilteringService;
+    private CollaborativeFilteringService collaborativeFilteringService;
 
     public List<MovieRatings> moviesToRecommended(Long userId) throws DatabaseException {
         List<MovieRatings> userRatingsList = collaborativeFilteringService.userRatingsList(userId);

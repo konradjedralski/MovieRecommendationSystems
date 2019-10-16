@@ -21,11 +21,11 @@ import static java.util.Collections.reverseOrder;
 public class ContentBasedFiltering {
 
     @Autowired
-    ContentBasedFilteringService contentBasedFilteringService;
+    private ContentBasedFilteringService contentBasedFilteringService;
     @Autowired
-    MoviesApiService moviesApiService;
+    private MoviesApiService moviesApiService;
 
-    private final int limit = 15;
+    private static final int limit = 15;
 
     public LinkedHashMap<Long, Double> sortGenres(Long userId) throws DatabaseException {
         HashMap<Long, Double> genreRating = contentBasedFilteringService.avgGenreRating(userId);
