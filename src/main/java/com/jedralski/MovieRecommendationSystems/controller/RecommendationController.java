@@ -183,7 +183,6 @@ public class RecommendationController {
         for (Long movie : moviesToRecommendedHybridList) {
             moviesToRecommendedHybrid.put(movie.longValue(), moviesApiService.findMovieTitleById(movie.longValue()));
         }
-
         return moviesToRecommendedHybrid;
     }
 }

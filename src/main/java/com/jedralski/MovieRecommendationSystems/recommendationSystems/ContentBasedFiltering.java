@@ -42,7 +42,6 @@ public class ContentBasedFiltering {
 
         LinkedHashMap<Long, Double> genreRatingSorted = genreRating.entrySet().stream().sorted(reverseOrder(Map.Entry.comparingByValue())).limit(limit)
                                                                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-
         return genreRatingSorted;
     }
 
@@ -61,7 +60,6 @@ public class ContentBasedFiltering {
 
         LinkedHashMap<Long, Double> productionCompanyRatingSorted = productionCompanyRating.entrySet().stream().sorted(reverseOrder(Map.Entry.comparingByValue())).limit(limit)
                                                                                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-
         return productionCompanyRatingSorted;
     }
 
@@ -80,7 +78,6 @@ public class ContentBasedFiltering {
 
         LinkedHashMap<Long, Double> mainActorRatingSorted = mainActorRating.entrySet().stream().sorted(reverseOrder(Map.Entry.comparingByValue())).limit(limit)
                                                                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-
         return mainActorRatingSorted;
     }
 

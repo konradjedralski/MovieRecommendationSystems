@@ -55,7 +55,6 @@ public class HybridMethod {
                 moviesRecommended.remove(i);
             }
         }
-
         return moviesRecommended;
     }
 }
