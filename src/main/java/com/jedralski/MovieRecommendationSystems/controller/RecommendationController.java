@@ -62,6 +62,7 @@ public class RecommendationController {
                 long duration1 = (endTime1 - startTime1);
                 model.addAttribute("duration", duration1);
                 model.addAttribute("recommendationName", "Collaborative Filtering");
+                model.addAttribute("user", user.getUsername());
                 model.addAttribute("moviesToRecommended", moviesToRecommendedCollaborative);
                 break;
             case "contentBasedFiltering":
@@ -71,6 +72,7 @@ public class RecommendationController {
                 long duration2 = (endTime2 - startTime2);
                 model.addAttribute("duration", duration2);
                 model.addAttribute("recommendationName", "Content Based Filtering");
+                model.addAttribute("user", user.getUsername());
                 model.addAttribute("moviesToRecommended", moviesToRecommendedContentBased.entrySet().stream().limit(20)
                                                                                          .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new)));
                 break;
@@ -81,6 +83,7 @@ public class RecommendationController {
                 long duration3 = (endTime3 - startTime3);
                 model.addAttribute("duration", duration3);
                 model.addAttribute("recommendationName", "Collaborative Filtering");
+                model.addAttribute("user", user.getUsername());
                 model.addAttribute("moviesToRecommended", moviesToRecommendedHybrid);
                 break;
         }
