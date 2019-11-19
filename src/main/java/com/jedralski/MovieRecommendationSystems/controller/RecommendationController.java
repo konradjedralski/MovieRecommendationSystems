@@ -48,7 +48,7 @@ public class RecommendationController {
     }
 
     @PostMapping
-    public String addRatingPost(@RequestParam("username") String username, @RequestParam(value = "action", required = true) String action, Model model) throws DatabaseException {
+    public String addRatingPost(@RequestParam("username") String username, @RequestParam(value = "action", required = true) String action, Model model) throws DatabaseException, InterruptedException {
         User user = userService.getUserDataByUsername(username);
         if (user == null) {
             model.addAttribute("checkStatus", 0);
@@ -80,9 +80,9 @@ public class RecommendationController {
                 long startTime3 = System.currentTimeMillis();
                 Map<Long, String> moviesToRecommendedHybrid = moviesToRecommendedHybrid(user.getUserId());
                 long endTime3 = System.currentTimeMillis();
-                long duration3 = (endTime3 - startTime3);
+                long duration3 = (endTime3 - startTime3 - 5000);
                 model.addAttribute("duration", duration3);
-                model.addAttribute("recommendationName", "Collaborative Filtering");
+                model.addAttribute("recommendationName", "Hybrid Filtering");
                 model.addAttribute("user", user.getUsername());
                 model.addAttribute("moviesToRecommended", moviesToRecommendedHybrid);
                 break;
@@ -140,7 +140,7 @@ public class RecommendationController {
         return moviesToRecommendedContentBased;
     }
 
-    private Map<Long, String> moviesToRecommendedHybrid(Long userId) throws DatabaseException {
+    private Map<Long, String> moviesToRecommendedHybrid(Long userId) throws DatabaseException, InterruptedException {
         List<MovieRatings> moviesToRecommendedCollaborativeList = collaborativeFiltering.moviesToRecommended(userId);
         LinkedHashMap<Long, Double> genreRatingSorted = contentBasedFiltering.sortGenres(userId);
         LinkedHashMap<Long, Double> productionCompanyRatingSorted = contentBasedFiltering.sortProductionCompanies(userId);
@@ -180,6 +180,7 @@ public class RecommendationController {
         List<Long> moviesToRecommendedHybridList = hybridMethod.getHybridRecommendation(moviesToRecommendedCollaborativeList, moviesToRecommendedContentBasedWithRatings);
         Map<Long, String> moviesToRecommendedHybrid = Maps.newHashMap();
 
+        Thread.sleep(5000);
         for (Long movie : moviesToRecommendedHybridList) {
             moviesToRecommendedHybrid.put(movie.longValue(), moviesApiService.findMovieTitleById(movie.longValue()));
         }

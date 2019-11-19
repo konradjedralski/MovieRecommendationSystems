@@ -20,7 +20,7 @@ public class MoviesApiDAOImpl implements MoviesApiDAO {
     private static final String API_URL_FIND_MOVIE_BY_TITLE = "https://api.themoviedb.org/3/search/movie?api_key=%s&query=%s";
     private static final String API_URL_FIND_MOVIE_DETAILS_BY_MOVIE_ID = "https://api.themoviedb.org/3/movie/%s?api_key=%s&language=en-US";
     private static final String API_URL_FIND_MOVIE_CREDITS_BY_MOVIE_ID = "https://api.themoviedb.org/3/movie/%s/credits?api_key=%s";
-    private static final String API_URL_FIND_MOVIE_TITLE_BY_DETAILS = "https://api.themoviedb.org/3/discover/movie?api_key=%s&language=en-US&with_cast=%s&with_companies=%s&with_genres=%s&page=%s";
+    private static final String API_URL_FIND_MOVIE_TITLE_BY_DETAILS = "https://api.themoviedb.org/3/discover/movie?api_key=%s&language=en-US&sort_by=popularity.desc&with_cast=%s&with_companies=%s&with_genres=%s&page=%s";
 
     private final ConnectionFactory connectionFactory;
 
